@@ -16,19 +16,19 @@ using System.IdentityModel.Tokens.Jwt;
 
 namespace HRTaskApp.Controllers
 {
-    [authorize(roles = "admin,manager")]
+    [Authorize(Roles = "Admin,Manager")]
     [ApiController]
     [Route("api/[controller]")]
     public class EmployeeController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;
         private readonly IMapper _mapper;
-        private readonly IHubContext<CommunicationHub> _hubContext;
-        public EmployeeController(IEmployeeService employeeService, IMapper mapper, IHubContext<CommunicationHub> hubContext)
+        //private readonly IHubContext<ChatHub> _hubContext;
+        public EmployeeController(IEmployeeService employeeService, IMapper mapper/* IHubContext<ChatHub> hubContext*/)
         {
             _employeeService = employeeService;
             _mapper = mapper;
-            _hubContext = hubContext;
+            //_hubContext = hubContext;
         }
 
         
@@ -106,18 +106,18 @@ namespace HRTaskApp.Controllers
             return StatusCode(204);
         }
 
-        [HttpPost("send-message")]
-        public async Task<IActionResult> SendMessageToRole([FromBody] MessageRequest messageRequest)
-        {
-            if (messageRequest == null || string.IsNullOrEmpty(messageRequest.Role) || string.IsNullOrEmpty(messageRequest.Message))
-            {
-                return BadRequest("Invalid request");
-            }
+        //[HttpPost("send-message")]
+        //public async Task<IActionResult> SendMessageToRole([FromBody] MessageRequest messageRequest)
+        //{
+        //    if (messageRequest == null || string.IsNullOrEmpty(messageRequest.Role) || string.IsNullOrEmpty(messageRequest.Message))
+        //    {
+        //        return BadRequest("Invalid request");
+        //    }
 
-            // istifadəçinin roluna uyğun qrupa mesaj göndərmək
-            await _hubContext.Clients.Group(messageRequest.Role).SendAsync("ReceiveMessage", messageRequest.Message);
-            return Ok(new { Status = "Message sent" });
-        }
+        //    // istifadəçinin roluna uyğun qrupa mesaj göndərmək
+        //    await _hubContext.Clients.Group(messageRequest.Role).SendAsync("ReceiveMessage", messageRequest.Message);
+        //    return Ok(new { Status = "Message sent" });
+        //}
         // admin butun iscilerin maaslarini odeye biler
         [HttpPost("pay-salaries/admin")]
         [Authorize(Roles = "Admin")]
